@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brooklyn Bagels & Deli</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@300;400;600;700&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:#F2D5C0;--blush:#EEC9A8;--warm-tan:#D4A97A;--caramel:#B07840;
+    --caramel-d:#8C5E28;--brown:#3E2409;--cream:#FDF6ED;--warm-white:#FFFBF5;
+    --soft-gold:#D4963A;--gold-light:#E8B566;
+    --border:rgba(180,120,60,0.2);--border-strong:rgba(180,120,60,0.4);
+    --text:#2E1A06;--text-mid:#6B4425;--text-light:#9C7048;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+  /* ── PAGES ── */
+  .page{display:none}.page.active{display:block}
+
+  /* ── NAV ── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:200;
+    background:rgba(253,246,237,0.97);backdrop-filter:blur(8px);
+    border-bottom:1.5px solid var(--border-strong);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 48px;height:68px;
+    box-shadow:0 2px 20px rgba(180,120,60,0.08);
+  }
+  .nav-brand{
+    font-family:'Dancing Script',cursive;font-size:1.75rem;
+    color:var(--caramel-d);cursor:pointer;letter-spacing:.3px;
+  }
+  .nav-links{display:flex;gap:6px}
+  .nav-link{
+    background:none;border:none;font-family:'Nunito',sans-serif;
+    font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    color:var(--text-mid);padding:8px 16px;cursor:pointer;transition:all .2s;
+    border-radius:20px;
+  }
+  .nav-link:hover,.nav-link.active-nav{background:var(--blush);color:var(--brown)}
+
+  /* ── TICKER ── */
+  .ticker{
+    position:fixed;top:68px;left:0;right:0;z-index:199;
+    background:linear-gradient(90deg,var(--caramel),var(--warm-tan),var(--caramel));
+    padding:9px 0;overflow:hidden;
+  }
+  .ticker-inner{
+    display:inline-block;white-space:nowrap;
+    font-size:.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+    color:var(--cream);animation:marquee 28s linear infinite;
+  }
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* ── SHARED ── */
+  .section-label{font-size:.65rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--soft-gold);margin-bottom:10px}
+  .section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--brown);line-height:1.15;margin-bottom:16px}
+  .section-title em{font-style:italic;color:var(--caramel)}
+  .section-desc{font-size:1rem;color:var(--text-mid);line-height:1.75;max-width:560px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ── HERO ── */
+  #hero{
+    min-height:100vh;padding:160px 48px 100px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    background:radial-gradient(ellipse at 10% 80%,rgba(212,169,122,.18) 0%,transparent 50%),
+               radial-gradient(ellipse at 90% 10%,rgba(242,213,192,.22) 0%,transparent 50%),
+               radial-gradient(ellipse at 50% 50%,rgba(253,246,237,1) 0%,rgba(248,238,220,1) 100%);
+  }
+  #hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;border:1.5px solid rgba(180,120,60,.1);top:-120px;right:-120px;pointer-events:none}
+  #hero::after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;border:1.5px solid rgba(180,120,60,.1);bottom:-80px;left:-80px;pointer-events:none}
+  .hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1100px;width:100%;position:relative;z-index:1}
+  .hero-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--soft-gold);margin-bottom:16px;opacity:0;animation:fadeUp .7s ease .2s forwards}
+  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5vw,4.8rem);font-weight:900;color:var(--brown);line-height:1.05;margin-bottom:12px;opacity:0;animation:fadeUp .7s ease .4s forwards}
+  .hero-title em{font-style:italic;color:var(--caramel)}
+  .hero-tagline{font-family:'Dancing Script',cursive;font-size:clamp(1.2rem,2.5vw,1.65rem);color:var(--text-light);margin-bottom:40px;opacity:0;animation:fadeUp .7s ease .6s forwards}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease .8s forwards}
+  .btn-primary{background:var(--caramel);color:var(--cream);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 36px;border:none;cursor:pointer;transition:all .22s;border-radius:2px}
+  .btn-primary:hover{background:var(--caramel-d);transform:translateY(-2px);box-shadow:0 8px 24px rgba(140,94,40,.3)}
+  .btn-secondary{background:transparent;color:var(--caramel-d);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:13px 36px;border:2px solid var(--caramel);cursor:pointer;transition:all .22s;border-radius:2px}
+  .btn-secondary:hover{background:var(--blush)}
+
+  .hero-panel{background:rgba(255,251,245,.85);border:1px solid var(--border-strong);border-radius:4px;padding:40px 36px;box-shadow:0 4px 40px rgba(180,120,60,.1);opacity:0;animation:fadeUp .7s ease .6s forwards}
+  .hp-title{font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--caramel-d);margin-bottom:24px;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .hp-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+  .hp-row:last-child{border-bottom:none;padding-bottom:0}
+  .hp-key{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);display:flex;align-items:center;gap:8px}
+  .hp-key svg{width:14px;height:14px;opacity:.7}
+  .hp-val{font-family:'Playfair Display',serif;font-size:.92rem;color:var(--brown);text-align:right;line-height:1.5}
+  .hp-badge{display:inline-block;background:var(--rose);color:var(--caramel-d);font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-top:8px}
+  .ct-placeholder{font-family:'Nunito',sans-serif;font-size:.85rem;color:var(--text-light);font-style:italic;background:var(--blush);display:inline-block;padding:4px 12px;border-radius:20px;margin-top:4px}
+
+  /* ── ABOUT ── */
+  #about{background:var(--warm-white);padding:100px 48px}
+  .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+  .about-visual{position:relative;height:420px}
+  .av-block-back{position:absolute;inset:0;background:linear-gradient(135deg,var(--blush) 0%,var(--rose) 100%);border-radius:4px;border:1px solid var(--border-strong)}
+  .av-block-front{position:absolute;bottom:-24px;right:-24px;width:70%;height:70%;background:linear-gradient(135deg,var(--warm-tan) 0%,var(--caramel) 100%);border-radius:4px;border:1px solid var(--border-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+  .av-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--cream);line-height:1}
+  .av-num-label{font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(253,246,237,.7);margin-top:4px}
+  .av-pill{position:absolute;top:24px;left:-20px;background:var(--brown);color:var(--cream);padding:12px 20px;border-radius:2px;font-family:'Dancing Script',cursive;font-size:1.1rem}
+  .about-features{margin-top:32px;display:flex;flex-direction:column;gap:14px}
+  .af-item{display:flex;align-items:flex-start;gap:14px}
+  .af-dot{width:8px;height:8px;border-radius:50%;background:var(--soft-gold);margin-top:7px;flex-shrink:0}
+  .af-text{font-size:.95rem;color:var(--text-mid);line-height:1.6}
+  .af-text strong{color:var(--brown)}
+
+  /* ── MENU PREVIEW ── */
+  #menu-preview{background:var(--cream);padding:100px 48px}
+  .mp-inner{max-width:1100px;margin:0 auto}
+  .mp-header{text-align:center;margin-bottom:60px}
+  .mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px}
+  .mp-card{background:var(--warm-white);border:1px solid var(--border);border-radius:3px;padding:32px 28px;position:relative;overflow:hidden;transition:all .25s}
+  .mp-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(180,120,60,.12);border-color:var(--border-strong)}
+  .mp-card-accent{position:absolute;top:0;left:0;right:0;height:4px}
+  .accent-gold{background:linear-gradient(90deg,var(--soft-gold),var(--gold-light))}
+  .accent-rose{background:linear-gradient(90deg,var(--warm-tan),var(--blush))}
+  .accent-brown{background:linear-gradient(90deg,var(--caramel-d),var(--caramel))}
+  .mp-card-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:1.5rem}
+  .icon-gold{background:rgba(212,150,58,.15)}
+  .icon-rose{background:rgba(238,201,168,.4)}
+  .icon-brown{background:rgba(140,94,40,.12)}
+  .mp-card-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--brown);margin-bottom:10px}
+  .mp-card-desc{font-size:.87rem;color:var(--text-mid);line-height:1.65}
+  .mp-cta-wrap{text-align:center}
+
+  /* ── SPECIALS ── */
+  #specials{background:var(--brown);padding:80px 48px;position:relative;overflow:hidden}
+  #specials::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.025) 39px,rgba(255,255,255,.025) 40px)}
+  .specials-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+  .specials-header{text-align:center;margin-bottom:56px}
+  .specials-header .section-label{color:var(--gold-light)}
+  .specials-header .section-title{color:var(--cream)}
+  .specials-header .section-title em{color:var(--gold-light)}
+  .specials-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1)}
+  .sp-item{background:rgba(62,36,9,.7);padding:36px 28px;text-align:center;transition:background .2s}
+  .sp-item:hover{background:rgba(140,94,40,.4)}
+  .sp-item-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:var(--gold-light);line-height:1;margin-bottom:8px}
+  .sp-item-label{font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,237,.5);margin-bottom:12px}
+  .sp-item-desc{font-size:.88rem;color:rgba(253,246,237,.7);line-height:1.6}
+
+  /* ── REVIEWS ── */
+  #reviews{background:linear-gradient(160deg,var(--blush) 0%,var(--rose) 50%,var(--cream) 100%);padding:100px 48px}
+  .rv-inner{max-width:1100px;margin:0 auto}
+  .rv-header{text-align:center;margin-bottom:60px}
+  .rv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+  .rv-card{background:rgba(255,251,245,.92);border:1px solid var(--border-strong);border-radius:4px;padding:36px 32px;box-shadow:0 4px 24px rgba(180,120,60,.08);position:relative}
+  .rv-quote{position:absolute;top:20px;right:24px;font-family:'Playfair Display',serif;font-size:4rem;color:var(--blush);line-height:1;user-select:none}
+  .rv-stars{display:flex;gap:3px;margin-bottom:14px}
+  .rv-star{color:var(--soft-gold);font-size:1rem}
+  .rv-text{font-size:.95rem;color:var(--text-mid);line-height:1.75;margin-bottom:22px;font-style:italic}
+  .rv-footer{border-top:1px solid var(--border);padding-top:16px}
+  .rv-name{font-weight:700;font-size:.95rem;color:var(--brown)}
+  .rv-meta{font-size:.76rem;color:var(--text-light);margin-top:3px}
+  .rv-platform{display:inline-block;margin-top:8px;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--caramel);background:var(--rose);padding:3px 10px;border-radius:20px}
+
+  /* ── CONTACT (no form) ── */
+  #contact{background:var(--cream);padding:100px 48px}
+  .ct-inner{max-width:900px;margin:0 auto}
+  .ct-header{text-align:center;margin-bottom:60px}
+  .ct-cards-row{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .ct-card{background:var(--warm-white);border:1px solid var(--border);border-radius:3px;padding:28px 28px;display:flex;align-items:flex-start;gap:18px}
+  .ct-card-icon{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--rose)}
+  .ct-card-label{font-size:.63rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px}
+  .ct-card-val{font-family:'Playfair Display',serif;font-size:1rem;color:var(--brown);line-height:1.6}
+  .ct-card-val strong{display:block}
+
+  /* ── FULL MENU PAGE ── */
+  #menu-page{background:var(--warm-white);padding-top:68px}
+  .menu-page-hero{background:var(--brown);padding:56px 48px 44px;text-align:center;border-bottom:3px solid var(--caramel)}
+  .menu-page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;color:var(--cream)}
+  .menu-page-hero h1 em{color:var(--gold-light);font-style:italic}
+  .menu-page-hero p{font-family:'Dancing Script',cursive;font-size:1.2rem;color:rgba(253,246,237,.55);margin-top:6px}
+  .fm-inner{max-width:960px;margin:0 auto;padding:60px 30px}
+
+  /* Menu items */
+  .msec{margin-bottom:60px}
+  .msec-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;color:var(--brown);text-transform:uppercase;letter-spacing:1.5px;padding-bottom:12px;border-bottom:2px solid var(--caramel);margin-bottom:22px;display:flex;align-items:center;gap:14px}
+  .msec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+  .msubh{font-size:.66rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--soft-gold);margin:18px 0 10px}
+  .note{font-size:.77rem;color:var(--text-light);font-style:italic;margin:6px 0 4px;line-height:1.5}
+  .mitem{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px dotted var(--border);gap:14px}
+  .mitem:last-child{border-bottom:none}
+  .mitem-l{flex:1}
+  .mitem-n{font-weight:700;font-size:.93rem;color:var(--text)}
+  .mitem-d{font-size:.79rem;color:var(--text-mid);font-style:italic;margin-top:2px;line-height:1.4}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 18px}
+  .tag{background:var(--rose);color:var(--caramel-d);font-size:.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:20px;border:1px solid var(--blush)}
+  .nitem{padding:9px 0;border-bottom:1px dotted var(--border)}
+  .nitem:last-child{border-bottom:none}
+  .nitem-h{display:flex;gap:10px;align-items:baseline}
+  .nnum{font-family:'Playfair Display',serif;font-size:1rem;color:var(--soft-gold);font-weight:700;min-width:26px}
+  .nname{font-weight:700;font-size:.93rem;color:var(--text)}
+  .ndesc{padding-left:36px;font-size:.8rem;color:var(--text-mid);font-style:italic;margin-top:3px;line-height:1.4}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+  .pbox{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--soft-gold);padding:14px 18px;margin-bottom:12px;border-radius:2px}
+  .pbox-t{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:5px}
+  .pbox-d{font-size:.8rem;color:var(--text-mid);line-height:1.5}
+  .scard{background:linear-gradient(135deg,var(--cream),var(--rose));border:1px solid var(--border);padding:16px 20px;margin-bottom:10px;border-radius:3px}
+  .scard-n{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--brown)}
+  .scard-d{font-size:.8rem;color:var(--text-mid);font-style:italic;margin-top:3px}
+
+  /* ── FOOTER ── */
+  footer{background:var(--brown);border-top:2px solid var(--caramel)}
+  .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;max-width:1100px;margin:0 auto;padding:60px 48px 48px}
+  .footer-brand{font-family:'Dancing Script',cursive;font-size:1.9rem;color:var(--gold-light);margin-bottom:14px}
+  .footer-tagline{font-size:.9rem;color:rgba(253,246,237,.5);line-height:1.7;margin-bottom:24px}
+  .footer-col-title{font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:18px}
+  .footer-links{display:flex;flex-direction:column;gap:10px}
+  .footer-link{font-size:.88rem;color:rgba(253,246,237,.55);background:none;border:none;text-align:left;cursor:pointer;padding:0;font-family:'Nunito',sans-serif;transition:color .2s}
+  .footer-link:hover{color:var(--gold-light)}
+  .footer-contact-item{font-size:.87rem;color:rgba(253,246,237,.55);margin-bottom:10px;line-height:1.5}
+  .footer-contact-item strong{color:rgba(253,246,237,.8);display:block}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:20px 48px;display:flex;justify-content:space-between;align-items:center}
+  .footer-copy{font-size:.72rem;color:rgba(253,246,237,.3);letter-spacing:.5px}
+  .footer-designer{font-size:.72rem;color:rgba(253,246,237,.3);letter-spacing:.5px;text-align:right;line-height:1.7}
+  .footer-designer a{color:rgba(253,246,237,.45);text-decoration:none}
+  .footer-designer a:hover{color:var(--gold-light)}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){
+    .hero-inner,.about-inner,.ct-cards-row{grid-template-columns:1fr;gap:48px}
+    .hero-panel,.about-visual{display:none}
+    .mp-grid{grid-template-columns:1fr 1fr}
+    .specials-grid{grid-template-columns:1fr 1fr}
+    .footer-top{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    nav{padding:0 20px}
+    .nav-brand{font-size:1.35rem}
+    .nav-links{gap:2px}
+    .nav-link{padding:6px 10px;font-size:.65rem;letter-spacing:1px}
+    #hero,#about,#menu-preview,#specials,#reviews,#contact{padding:80px 24px}
+    .mp-grid,.specials-grid,.two-col,.ct-cards-row{grid-template-columns:1fr;gap:16px}
+    .footer-top{grid-template-columns:1fr;padding:40px 24px}
+    .footer-bottom{flex-direction:column;gap:10px;text-align:center;padding:20px 24px}
+    .footer-designer{text-align:center}
+    .fm-inner{padding:40px 20px}
+    .menu-page-hero{padding:40px 24px 32px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">Brooklyn Bagels &amp; Deli</div>
+  <div class="nav-links">
+    <button class="nav-link active-nav" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-menu" onclick="showPage('menu')">Menu</button>
+  </div>
+</nav>
+
+<!-- TICKER (shared, always visible) -->
+<div class="ticker">
+  <span class="ticker-inner">FRESH BAKED DAILY &nbsp;✦&nbsp; SPECIALTY SANDWICHES &nbsp;✦&nbsp; HAND-CRAFTED BAGELS &nbsp;✦&nbsp; SMOOTHIES &nbsp;✦&nbsp; BREAKFAST ALL MORNING &nbsp;✦&nbsp; CATERING PLATTERS &nbsp;✦&nbsp; PANINI &amp; WRAPS &nbsp;✦&nbsp; OPEN 7 DAYS A WEEK &nbsp;✦&nbsp; FRESH BAKED DAILY &nbsp;✦&nbsp; SPECIALTY SANDWICHES &nbsp;✦&nbsp; HAND-CRAFTED BAGELS &nbsp;✦&nbsp; SMOOTHIES &nbsp;✦&nbsp; BREAKFAST ALL MORNING &nbsp;✦&nbsp; CATERING PLATTERS &nbsp;✦&nbsp; PANINI &amp; WRAPS &nbsp;✦&nbsp; OPEN 7 DAYS A WEEK &nbsp;✦&nbsp;</span>
+</div>
+
+<!-- ════════════════════════════════════
+     HOME PAGE
+════════════════════════════════════ -->
+<div id="home" class="page active">
+
+  <!-- HERO -->
+  <section id="hero" style="padding-top:140px">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-eyebrow">Brooklyn, New York</p>
+        <h1 class="hero-title">Brooklyn<br><em>Bagels &amp; Deli</em></h1>
+        <p class="hero-tagline">Where every bite feels like home.</p>
+        <div class="hero-ctas">
+          <button class="btn-primary" onclick="showPage('menu')">View Our Menu</button>
+          <button class="btn-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Find Us</button>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="hp-title">Today's Hours &amp; Info</div>
+        <div class="hp-row">
+          <span class="hp-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Weekdays
+          </span>
+          <span class="hp-val">6:30am – 2:00pm</span>
+        </div>
+        <div class="hp-row">
+          <span class="hp-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Weekends
+          </span>
+          <span class="hp-val">6:30am – 1:00pm</span>
+        </div>
+        <div class="hp-row">
+          <span class="hp-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Address
+          </span>
+          <span class="hp-val"><span class="ct-placeholder">Downtown Freehold Boro, 31 East Main Street</span></span>
+        </div>
+        <div class="hp-row">
+          <span class="hp-key">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.13.96.36 1.9.69 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.45-.45a2 2 0 012.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0122 14.92z"/></svg>
+            Phone Number
+          </span>
+          <span class="hp-val"><span class="ct-placeholder">(1)732 761-8710</span></span>
+        </div>
+        <div style="text-align:center;margin-top:20px">
+          <span class="hp-badge">✦ Walk-ins Welcome ✦</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-visual">
+        <div class="av-block-back"></div>
+        <div class="av-block-front">
+          <div class="av-num">30+</div>
+          <div class="av-num-label">Years of Craft</div>
+        </div>
+        <div class="av-pill">Baked with Love ♥</div>
+      </div>
+      <div class="about-text">
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">A Brooklyn <em>tradition</em>,<br>fresh every morning.</h2>
+        <p class="section-desc">Brooklyn Bagels &amp; Deli has been a neighborhood staple for decades — a place where the coffee is always hot, the bagels are always fresh, and familiar faces are always welcome. We bake everything from scratch each morning so that every bite you take is made with care.</p>
+        <div class="about-features">
+          <div class="af-item"><div class="af-dot"></div><div class="af-text"><strong>Hand-rolled bagels</strong> baked in-house each morning before sunrise.</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text"><strong>Boar's Head meats &amp; cheeses</strong> on every deli order, no exceptions.</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text"><strong>Fast, friendly service</strong> — because your time matters as much as your meal.</div></div>
+          <div class="af-item"><div class="af-dot"></div><div class="af-text"><strong>Full catering</strong> for your next meeting, party, or gathering.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU PREVIEW CARDS -->
+  <section id="menu-preview">
+    <div class="mp-inner">
+      <div class="mp-header">
+        <p class="section-label">What We Offer</p>
+        <h2 class="section-title">Something for <em>every</em> craving</h2>
+      </div>
+      <div class="mp-grid">
+        <div class="mp-card"><div class="mp-card-accent accent-gold"></div><div class="mp-card-icon icon-gold">🥯</div><div class="mp-card-title">Bagels &amp; Spreads</div><div class="mp-card-desc">18 bagel varieties baked fresh daily, paired with cream cheese, lox, hummus, and so much more.</div></div>
+        <div class="mp-card"><div class="mp-card-accent accent-rose"></div><div class="mp-card-icon icon-rose">🥚</div><div class="mp-card-title">Breakfast</div><div class="mp-card-desc">Eggs any style, custom omelettes, and morning sandwiches on fresh-baked bagels or wraps.</div></div>
+        <div class="mp-card"><div class="mp-card-accent accent-brown"></div><div class="mp-card-icon icon-brown">🥪</div><div class="mp-card-title">Specialty Sandwiches</div><div class="mp-card-desc">14 signature creations plus panini, wraps, and hot sandwiches — or build your own masterpiece.</div></div>
+        <div class="mp-card"><div class="mp-card-accent accent-gold"></div><div class="mp-card-icon icon-gold">🥗</div><div class="mp-card-title">Fresh Salads</div><div class="mp-card-desc">Caesar, Greek, Chef, and more — with 13 house dressings to choose from.</div></div>
+        <div class="mp-card"><div class="mp-card-accent accent-rose"></div><div class="mp-card-icon icon-rose">🧁</div><div class="mp-card-title">Muffins &amp; Pastries</div><div class="mp-card-desc">Cinnamon rolls, danishes, crumb cake, brownies, and more baked treats every day.</div></div>
+        <div class="mp-card"><div class="mp-card-accent accent-brown"></div><div class="mp-card-icon icon-brown">🍽️</div><div class="mp-card-title">Catering Platters</div><div class="mp-card-desc">Bagel platters, cold cut trays, fruit &amp; cheese boards, and sandwich salad platters for any occasion.</div></div>
+      </div>
+      <div class="mp-cta-wrap">
+        <button class="btn-primary" onclick="showPage('menu')">See the Full Menu →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIALS STRIP -->
+  <section id="specials">
+    <div class="specials-inner">
+      <div class="specials-header">
+        <p class="section-label">By the Numbers</p>
+        <h2 class="section-title">Made fresh. Made <em>right.</em></h2>
+      </div>
+      <div class="specials-grid">
+        <div class="sp-item"><div class="sp-item-num">18</div><div class="sp-item-label">Bagel Varieties</div><div class="sp-item-desc">From plain to jalapeño cheddar, baked fresh before sunrise every day.</div></div>
+        <div class="sp-item"><div class="sp-item-num">14</div><div class="sp-item-label">Signature Sandwiches</div><div class="sp-item-desc">Crafted recipes with names as bold as their flavors.</div></div>
+        <div class="sp-item"><div class="sp-item-num">13</div><div class="sp-item-label">House Dressings</div><div class="sp-item-desc">The perfect complement to every fresh salad we make.</div></div>
+        <div class="sp-item"><div class="sp-item-num">7</div><div class="sp-item-label">Days a Week</div><div class="sp-item-desc">We're here every morning, rain or shine, ready for you.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <div class="rv-inner">
+      <div class="rv-header">
+        <p class="section-label">What People Are Saying</p>
+        <h2 class="section-title">Loved by the <em>neighborhood</em></h2>
+      </div>
+      <div class="rv-grid">
+        <div class="rv-card">
+          <div class="rv-quote">"</div>
+          <div class="rv-stars"><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span></div>
+          <p class="rv-text">This place makes one of the best sandwiches I've ever had! Breakfast or lunch they are excellent! I do my best to get there at least once a week. The service is always very pleasant and fast.</p>
+          <div class="rv-footer">
+            <div class="rv-name">Donna Kleschinsky</div>
+            <div class="rv-meta">2 months ago &nbsp;•&nbsp; Verified Customer</div>
+            <div class="rv-platform">★ 5.0 Google Review</div>
+          </div>
+        </div>
+        <div class="rv-card">
+          <div class="rv-quote">"</div>
+          <div class="rv-stars"><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span><span class="rv-star">★</span></div>
+          <p class="rv-text">One of the best delis in Brooklyn — period. Great food, great people, and it never disappoints whether it's breakfast or lunch.</p>
+          <div class="rv-footer">
+            <div class="rv-name">Joe Kleschinsky</div>
+            <div class="rv-meta">Regular Customer</div>
+            <div class="rv-platform">★ 5.0 Google Review</div>
+          </div>
+        </div>
+        <div class="rv-card" style="background:linear-gradient(135deg,var(--rose),var(--blush));border-color:var(--border-strong);">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-family:'Dancing Script',cursive;font-size:2rem;color:var(--caramel-d);margin-bottom:12px;">Share Your Experience</div>
+            <p style="font-size:.9rem;color:var(--text-mid);line-height:1.7;margin-bottom:22px;">We'd love to hear what you think! Leave us a review and let the neighborhood know.</p>
+            <span class="ct-placeholder">[Review Platform Link]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT (info cards only, no form) -->
+  <section id="contact">
+    <div class="ct-inner">
+      <div class="ct-header">
+        <p class="section-label">Find Us</p>
+        <h2 class="section-title">Come say <em>hello</em></h2>
+      </div>
+      <div class="ct-cards-row">
+        <div class="ct-card">
+          <div class="ct-card-icon">📍</div>
+          <div>
+            <div class="ct-card-label">Location</div>
+            <div class="ct-card-val"><span class="ct-placeholder">Downtown Freehold Boro, 31 East Main Street</span><br><span class="ct-placeholder">[City, State, ZIP]</span></div>
+          </div>
+        </div>
+        <div class="ct-card">
+          <div class="ct-card-icon">📞</div>
+          <div>
+            <div class="ct-card-label">Phone</div>
+            <div class="ct-card-val"><span class="ct-placeholder">(1)732 761-8710</span></div>
+          </div>
+        </div>
+        <div class="ct-card">
+          <div class="ct-card-icon">🕐</div>
+          <div>
+            <div class="ct-card-label">Hours</div>
+            <div class="ct-card-val"><strong>Mon – Fri</strong> 6:30am – 2:00pm<br><strong>Sat – Sun</strong> 6:30am – 1:00pm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (home) -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Brooklyn Bagels &amp; Deli</div>
+        <p class="footer-tagline">Where every bite feels like home. Baked fresh every morning, served with a smile every day.</p>
+        <span style="display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,237,.3);background:rgba(255,255,255,.05);padding:5px 14px;border-radius:20px;">✦ Open 7 Days a Week ✦</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        <div class="footer-links">
+          <button class="footer-link" onclick="window.scrollTo({top:0,behavior:'smooth'})">Home</button>
+          <button class="footer-link" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About Us</button>
+          <button class="footer-link" onclick="showPage('menu')">Full Menu</button>
+          <button class="footer-link" onclick="document.getElementById('reviews').scrollIntoView({behavior:'smooth'})">Reviews</button>
+          <button class="footer-link" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <div class="footer-contact-item"><strong>Downtown Freehold Boro, 31 East Main Street</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">Downtown Freehold Boro, 31 East Main Street</span></div>
+        <div class="footer-contact-item"><strong>(1)732 761-8710</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">(1)732 761-8710</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Brooklyn Bagels &amp; Deli. All rights reserved.</div>
+      <div class="footer-designer">
+        Designed by <strong style="color:rgba(253,246,237,.55)">Andrew Nieves</strong><br>
+        <a href="mailto:drewnieves2010@gmail.com">drewnieves2010@gmail.com</a> &nbsp;|&nbsp; <a href="tel:19295959296">(1) 929 595-9296</a>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /home page -->
+
+
+<!-- ════════════════════════════════════
+     MENU PAGE
+════════════════════════════════════ -->
+<div id="menu-page" class="page">
+
+  <div class="menu-page-hero">
+    <h1>Our <em>Menu</em></h1>
+    <p>Fresh. Handcrafted. Every single day.</p>
+  </div>
+
+  <div class="fm-inner">
+
+    <!-- BAGELS -->
+    <div class="msec">
+      <h2 class="msec-title">Bagels</h2>
+      <p class="note">Baked Fresh Daily</p>
+      <div class="tags">
+        <span class="tag">Plain</span><span class="tag">Sesame</span><span class="tag">Poppy</span><span class="tag">Whole Wheat</span><span class="tag">Pumpernickel</span><span class="tag">Onion</span><span class="tag">Everything</span><span class="tag">Garlic</span><span class="tag">Egg</span><span class="tag">Salt</span><span class="tag">Baby</span><span class="tag">Cheddar</span><span class="tag">Jalapeño Cheddar</span><span class="tag">Spinach</span><span class="tag">Italian</span><span class="tag">Super Cinnamon</span><span class="tag">Blueberry</span><span class="tag">Cinnamon Raisin</span>
+      </div>
+      <h3 class="msubh">Spreads on a Bagel</h3>
+      <div class="two-col">
+        <div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Butter or Jelly</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Lite Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Peanut Butter</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Vegetable Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Scallion Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Walnut Raisin</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Olive</div></div></div>
+        </div>
+        <div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Lox and Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Blueberry Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Strawberry Cream Cheese</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Hummus</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Jalapeño Cheddar</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Oreo Birthday Cake</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Fresh Lox</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAKFAST -->
+    <div class="msec">
+      <h2 class="msec-title">Breakfast</h2>
+      <p class="note">Available on Bagel or Wrap</p>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Two (2) Eggs Any Style</div><div class="mitem-d">w/ pork roll, bacon, sausage, or ham</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Two (2) Eggs Any Style — Meat-Free</div></div></div>
+      <p class="note">Cheese 50¢ extra</p>
+      <h3 class="msubh">Omelettes — Served with Toast</h3>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Lox &amp; Onions</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Veggie</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Feta Spinach</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Western</div></div></div>
+      <h3 class="msubh">Create Your Own Omelette</h3>
+      <p class="note">Egg 45¢ each &nbsp;•&nbsp; Cheese 50¢ each &nbsp;•&nbsp; Meat $1.50 each</p>
+    </div>
+
+    <!-- MUFFINS -->
+    <div class="msec">
+      <h2 class="msec-title">Muffins &amp; Pastries</h2>
+      <div class="tags">
+        <span class="tag">Corn</span><span class="tag">Banana Nut</span><span class="tag">Cinnamon Glazed</span><span class="tag">Blueberry</span><span class="tag">Chocolate Chip</span><span class="tag">NY Crumb Cake</span><span class="tag">Brownie</span><span class="tag">Linzer Tarts</span><span class="tag">Danishes</span><span class="tag">Cinnamon Rolls</span><span class="tag">Frosted Cakes</span><span class="tag">Italian Cookies</span>
+      </div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Fruit &amp; Yogurt Parfait w. Granola</div></div></div>
+    </div>
+
+    <!-- SALAD SANDWICHES -->
+    <div class="msec">
+      <h2 class="msec-title">Salad Sandwiches</h2>
+      <p class="note">Available on Bagel, Sub, or Wrap &nbsp;•&nbsp; Any Topping &nbsp;•&nbsp; Avocado 75¢ extra</p>
+      <div class="two-col">
+        <div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Tuna</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Chicken</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Cranberry Chicken</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Egg</div></div></div>
+        </div>
+        <div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Shrimp or Seafood</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">White Fish</div></div></div>
+          <div class="mitem"><div class="mitem-l"><div class="mitem-n">Veggie Tuna</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIALTY SANDWICHES -->
+    <div class="msec">
+      <h2 class="msec-title">Specialty Sandwiches</h2>
+      <p class="note">For more of our Specialty Sandwiches, give us a call or stop by!</p>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">1.</span><span class="nname">Times Square</span></div><div class="ndesc">Peppermill turkey, bacon, and swiss cheese w/ coleslaw and russian dressing on a roll</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">2.</span><span class="nname">The Texan</span></div><div class="ndesc">Deluxe roast beef and melted black war cheddar cheese w/ bbq sauce and onions on a roll</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">3.</span><span class="nname">Brooklyn Bridge</span></div><div class="ndesc">Cracked pepper mill turkey, swiss cheese, romaine, roasted peppers, tomato and russian dressing</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">4.</span><span class="nname">Central Park West</span></div><div class="ndesc">Prosciutto with fresh mozzarella, spinach, roasted peppers, balsamic vinegar</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">5.</span><span class="nname">Trump Tower</span></div><div class="ndesc">Pastrami and corned beef with baby swiss and russian dressing</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">6.</span><span class="nname">Lawyer's Hero</span></div><div class="ndesc">Chicken breast and american cheese with bacon, lettuce and tomato</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">7.</span><span class="nname">Empire State</span></div><div class="ndesc">Turkey, corned beef and muenster cheese with lettuce, tomato coleslaw</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">8.</span><span class="nname">Chelsea</span></div><div class="ndesc">Roast beef, cheddar cheese, lettuce, tomato and onion</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">9.</span><span class="nname">Melt</span></div><div class="ndesc">Deluxe roast beef with melted mozzarella and onions</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">10.</span><span class="nname">Pita</span></div><div class="ndesc">Deluxe roast beef with avocado, lettuce, tomato, and creamy balsamic</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">11.</span><span class="nname">Deluxe</span></div><div class="ndesc">Deluxe roast beef and horseradish sauce</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">12.</span><span class="nname">Grilled Chicken Club</span></div><div class="ndesc">Chicken breast, blue cheese, bacon, lettuce, avocado, mayo, mustard</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">13.</span><span class="nname">Chicken Reuben</span></div><div class="ndesc">Smoked chicken breast, melted swiss, lettuce, coleslaw, onions and russian dressing</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">14.</span><span class="nname">Turkey Club</span></div><div class="ndesc">Turkey, bacon, lettuce and tomato</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">—</span><span class="nname">Create Your Own</span></div></div>
+    </div>
+
+    <!-- PANINI -->
+    <div class="msec">
+      <h2 class="msec-title">Panini</h2>
+      <p class="note">We Toast Bagels, Bread &amp; Rolls</p>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">1.</span><span class="nname">Belly Buster</span></div><div class="ndesc">Roast beef, bacon, melted cheese &amp; ham</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">2.</span><span class="nname">Matrix</span></div><div class="ndesc">Chicken salad, roasted turkey, whirlwind peppers, lettuce &amp; tomato</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">3.</span><span class="nname">Freeholder</span></div><div class="ndesc">Fresh honey glazed turkey, muenster cheese, coleslaw &amp; honey mustard</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">4.</span><span class="nname">Siciliano</span></div><div class="ndesc">Chicken, mozzarella, basil &amp; sun dried tomato spread</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">5.</span><span class="nname">Tuscan</span></div><div class="ndesc">Fresh mozzarella, fresh plum tomatoes, fresh basil, fresh spinach &amp; fresh sun dried tomatoes</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">6.</span><span class="nname">The Italiano</span></div><div class="ndesc">Grilled chicken, roasted peppers, fresh mozzarella &amp; pesto sauce</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">7.</span><span class="nname">Capri</span></div><div class="ndesc">Smoked turkey, pepperoni, provolone, spinach, jalapeños &amp; honey mustard</div></div>
+    </div>
+
+    <!-- WRAPS -->
+    <div class="msec">
+      <h2 class="msec-title">Wraps</h2>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">1.</span><span class="nname">Veggie Delight</span></div><div class="ndesc">Fresh mozzarella cheese w/avocado, tomatoes, spinach, roasted peppers and balsamic vinaigrette</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">2.</span><span class="nname">Chicken Gardenia</span></div><div class="ndesc">Grilled chicken, roasted peppers, fresh mozzarella, spinach, balsamic vinaigrette</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">3.</span><span class="nname">Buffalo Soldier</span></div><div class="ndesc">Grilled chicken dipped in wing sauce, diced celery, lettuce, tomato &amp; drizzled w/ bleu cheese</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">4.</span><span class="nname">Verrizano</span></div><div class="ndesc">Cajun roast beef, pepper jack, lettuce, tomato, onion, drizzled w/ romulate sauce</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">5.</span><span class="nname">The Rancher</span></div><div class="ndesc">Grilled chicken, lettuce, tomato, bacon, ranch dressing</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">6.</span><span class="nname">Prospect Park</span></div><div class="ndesc">Veggie tuna, lettuce &amp; tomato</div></div>
+      <div class="nitem"><div class="nitem-h"><span class="nnum">—</span><span class="nname">Create Your Own</span></div></div>
+    </div>
+
+    <!-- HOT SANDWICHES -->
+    <div class="msec">
+      <h2 class="msec-title">Hot Sandwiches</h2>
+      <p class="note">Available on Bagel or Sub/Wrap &nbsp;•&nbsp; Any Topping &nbsp;•&nbsp; Avocado 75¢ extra</p>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Eggplant</div><div class="mitem-d">w/ mixed greens, roasted peppers, balsamic</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Grilled Chicken — Any Topping</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Philly Cheese Steak</div><div class="mitem-d">w/ peppers, onions, side of fries</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Tuna or Chicken Melt</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">B.L.T.</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Veggie Burger</div></div></div>
+    </div>
+
+    <!-- SALADS -->
+    <div class="msec">
+      <h2 class="msec-title">Salads</h2>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Caesar Salad</div><div class="mitem-d">Crispy romaine lettuce w/ croutons, parmesan, and creamy caesar dressing w/ grilled chicken</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Greek Salad</div><div class="mitem-d">Lettuce, tomato, onions, black olives, feta cheese, and grape leaves</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Chef Salad</div><div class="mitem-d">Boar's Head cold cuts &amp; cheese, fresh green iceberg lettuce, tomato, red onions, green &amp; red peppers</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Deli Delight</div><div class="mitem-d">Fresh green iceberg lettuce, tomato &amp; green peppers w/ a scoop of: Tuna, Chicken, Whitefish, Shrimp, or Egg Salad; or Grilled or Breaded Chicken</div></div></div>
+      <p class="note">Dressings: Creamy Italian · Creamy Caesar · Honey Mustard · Russian · Balsamic Vinaigrette · Oil &amp; Vinegar · Tuscan · Sun-dried Tomato · Asian · Ranch · French · Bleu Cheese · Soy Ginger</p>
+      <h3 class="msubh">Side Salads</h3>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Coleslaw &nbsp;•&nbsp; Macaroni &nbsp;•&nbsp; Potato</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Tortellini w/ Peppers</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Spiral Pasta w/ Broccoli</div></div></div>
+    </div>
+
+    <!-- SOUP -->
+    <div class="msec">
+      <h2 class="msec-title">Hot Soup</h2>
+      <p class="note">Served All Year Round &nbsp;•&nbsp; Available in Small, Medium &amp; Large</p>
+    </div>
+
+    <!-- SMOOTHIES -->
+    <div class="msec">
+      <h2 class="msec-title">Fresh Smoothies</h2>
+      <p class="note">Blended to order with fresh fruits &amp; fat-free yogurt &nbsp;•&nbsp; 16 oz.</p>
+      <div class="scard"><div class="scard-n">Bahama Mama</div><div class="scard-d">Strawberry / Orange / Banana / Orange Juice</div></div>
+      <div class="scard"><div class="scard-n">Crimson Sunrise</div><div class="scard-d">Strawberry / Raspberry / Yogurt / Banana</div></div>
+      <div class="scard"><div class="scard-n">Peanutty Blast</div><div class="scard-d">Peanut Butter / Banana / Soymilk / Honey</div></div>
+    </div>
+
+    <!-- HOT BEVERAGES -->
+    <div class="msec">
+      <h2 class="msec-title">Hot Beverages</h2>
+      <p class="note">Available in Small, Medium &amp; Large</p>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Fresh Ground Coffee</div><div class="mitem-d">Regular, decaf or flavored</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Tea (Regular or Decaf)</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Herbal Teas</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Hot Chocolate</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">Cappuccino</div></div></div>
+      <div class="mitem"><div class="mitem-l"><div class="mitem-n">French Vanilla</div></div></div>
+    </div>
+
+    <!-- CATERING -->
+    <div class="msec">
+      <h2 class="msec-title">Catering Platters</h2>
+      <h3 class="msubh">Muffin Platters</h3>
+      <p class="note" style="margin-bottom:10px">Cranberry Nut · Blueberry · Raisin Oat · Banana Nut · Corn · Chocolate Chip · Apple Crumb</p>
+      <div class="two-col">
+        <div>
+          <div class="pbox"><div class="pbox-t">12 Assorted Muffins</div></div>
+          <div class="pbox"><div class="pbox-t">24 Assorted Muffins</div></div>
+          <div class="pbox"><div class="pbox-t">36 Assorted Muffins</div></div>
+        </div>
+        <div>
+          <h3 class="msubh" style="margin-top:0">Bagel &amp; Muffin Combo</h3>
+          <div class="pbox"><div class="pbox-t">12 Assorted Bagels &amp; 6 Gourmet Muffins</div><div class="pbox-d">Served with choice of any 8 oz. cream cheese or butter</div></div>
+          <div class="pbox"><div class="pbox-t">18 Assorted Bagels &amp; 12 Gourmet Muffins</div><div class="pbox-d">Served with choice of any 2 – 8 oz. cream cheese or butter</div></div>
+          <p class="note">Mini Bagels Also Available</p>
+        </div>
+      </div>
+      <h3 class="msubh">Breakfast Platters</h3>
+      <div class="two-col">
+        <div>
+          <div class="pbox"><div class="pbox-t">18 Assorted Bagels</div><div class="pbox-d">1½ lbs. of any cream cheese · serves 12–15</div></div>
+          <div class="pbox"><div class="pbox-t">24 Assorted Bagels</div><div class="pbox-d">2 lbs. of any cream cheese · serves 18–20</div></div>
+        </div>
+        <div>
+          <div class="pbox"><div class="pbox-t">30 Assorted Bagels</div><div class="pbox-d">2.5 lbs. of any cream cheese · serves 20–24</div></div>
+          <div class="pbox"><div class="pbox-t">36 Assorted Bagels</div><div class="pbox-d">3 lbs. of any cream cheese · serves 12–15</div></div>
+        </div>
+      </div>
+      <h3 class="msubh">Fresh Fruit Platter</h3>
+      <div class="pbox">
+        <div class="pbox-d">Melons, Strawberries, Pineapple, Grapes &amp; other seasonal fruits.</div>
+        <div class="pbox-d" style="margin-top:8px"><strong>Small Platter</strong> — serves 18–20 &nbsp;&nbsp; <strong>Large Platter</strong> — serves 28–35</div>
+      </div>
+      <h3 class="msubh">Cheese Platter</h3>
+      <div class="pbox"><div class="pbox-d">An assortment of fine cheeses cubed with crackers (serves 12–15)</div></div>
+      <h3 class="msubh">Cold Cut Platter — Serves 10 People</h3>
+      <div class="pbox">
+        <div class="pbox-d">Made to order with the finest Boar's Head cold cuts. All meats and cheeses are rolled and colorfully placed in a well designed platter with an assortment of bagels and choice of salads.</div>
+        <div class="pbox-d" style="margin-top:10px"><strong>Your Choice of 3 Meats &amp; 3 Cheeses:</strong><br>Ham · Roast Beef · Hard Salami · Pastrami · American · Provolone · Muenster · Swiss · Oven Gold Turkey · Genoa Salami · Corned Beef · Monterey Jack · Cheddar · Mozzarella</div>
+      </div>
+      <h3 class="msubh">Sandwich Salad Platter — Serves 10 People</h3>
+      <div class="pbox">
+        <div class="pbox-d">Your choice of any of our homemade salads served on a bagel, white, rye, wrap, whole wheat, kaiser roll or sub bread.</div>
+        <div class="pbox-d" style="margin-top:6px">Tuna · Egg · Chicken · Shrimp · Whitefish</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER (menu page) -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Brooklyn Bagels &amp; Deli</div>
+        <p class="footer-tagline">Where every bite feels like home. Baked fresh every morning, served with a smile every day.</p>
+        <span style="display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,237,.3);background:rgba(255,255,255,.05);padding:5px 14px;border-radius:20px;">✦ Open 7 Days a Week ✦</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        <div class="footer-links">
+          <button class="footer-link" onclick="showPage('home')">Home</button>
+          <button class="footer-link" onclick="showPage('home');setTimeout(()=>document.getElementById('about').scrollIntoView({behavior:'smooth'}),100)">About Us</button>
+          <button class="footer-link" onclick="showPage('home');setTimeout(()=>document.getElementById('reviews').scrollIntoView({behavior:'smooth'}),100)">Reviews</button>
+          <button class="footer-link" onclick="showPage('home');setTimeout(()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}),100)">Contact</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <div class="footer-contact-item"><strong>Address</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">Downtown Freehold Boro, 31 East Main Street</span></div>
+        <div class="footer-contact-item"><strong>Phone</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">(1)732 761-8710</span></div>
+        <div class="footer-contact-item"><strong>Email</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">[Email Address]</span></div>
+        <div class="footer-contact-item"><strong>Social Media</strong><span style="font-style:italic;color:rgba(253,246,237,.35)">[Social Handles]</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Brooklyn Bagels &amp; Deli. All rights reserved.</div>
+      <div class="footer-designer">
+        Designed by <strong style="color:rgba(253,246,237,.55)">Andrew Nieves</strong><br>
+        <a href="mailto:drewnieves2010@gmail.com">drewnieves2010@gmail.com</a> &nbsp;|&nbsp; <a href="tel:19295959296">(1) 929 595-9296</a>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /menu page -->
+
+<script>
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active-nav'));
+  if (p === 'home') {
+    document.getElementById('home').classList.add('active');
+    document.getElementById('nav-home').classList.add('active-nav');
+  } else {
+    document.getElementById('menu-page').classList.add('active');
+    document.getElementById('nav-menu').classList.add('active-nav');
+  }
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
